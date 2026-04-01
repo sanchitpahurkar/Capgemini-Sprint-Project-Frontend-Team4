@@ -2,40 +2,195 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
   <title>Edit Customer</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+        --bg: #f7f7f5;
+        --surface: #ffffff;
+        --border: #e8e8e4;
+        --text-primary: #1a1a18;
+        --text-secondary: #6b6b66;
+        --accent: #2563eb;
+        --accent-light: #eff6ff;
+        --radius: 10px;
+    }
+
+    body {
+        font-family: 'DM Sans', sans-serif;
+        background: var(--bg);
+        color: var(--text-primary);
+        min-height: 100vh;
+        margin: 0;
+    }
+
+    /* Top bar matching source */
+    .topbar {
+        background: var(--surface);
+        border-bottom: 1px solid var(--border);
+        padding: 0 2rem;
+        height: 56px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+    }
+
+    .topbar-brand {
+        font-size: 0.85rem;
+        font-weight: 600;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--text-primary);
+        font-family: 'DM Mono', monospace;
+    }
+
+    .page-wrapper {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 2.5rem 2rem;
+    }
+
+    .page-header {
+        margin-bottom: 2rem;
+    }
+
+    .page-title {
+        font-size: 1.6rem;
+        font-weight: 600;
+        letter-spacing: -0.02em;
+        margin: 0;
+        line-height: 1;
+    }
+
+    .page-subtitle {
+        font-size: 0.82rem;
+        color: var(--text-secondary);
+        margin-top: 0.35rem;
+    }
+
+    /* Form Card Styling */
+    .form-card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 2.5rem;
+    }
+
+    .form-label {
+        font-size: 0.72rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        color: var(--text-secondary);
+        margin-bottom: 0.5rem;
+    }
+
+    .form-control {
+        height: 38px;
+        font-size: 0.85rem;
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        background: var(--bg);
+        color: var(--text-primary);
+        transition: all 0.15s;
+    }
+
+    .form-control:focus {
+        background: #ffffff;
+        border-color: var(--accent);
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.08);
+        outline: none;
+    }
+
+    /* Buttons */
+    .btn-update {
+        height: 38px;
+        padding: 0 1.5rem;
+        font-size: 0.82rem;
+        font-weight: 500;
+        background: var(--accent);
+        color: #fff;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: background 0.15s;
+    }
+
+    .btn-update:hover {
+        background: #1d4ed8;
+    }
+
+    .btn-cancel {
+        height: 38px;
+        padding: 0 1.5rem;
+        font-size: 0.82rem;
+        font-weight: 500;
+        background: transparent;
+        color: var(--text-secondary);
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+    }
+
+    .btn-cancel:hover {
+        background: var(--bg);
+        color: var(--text-primary);
+    }
+
+    .section-divider {
+        height: 1px;
+        background: var(--border);
+        margin: 2rem 0;
+    }
+  </style>
 </head>
 
-<body class="bg-light">
+<body>
+
+<div class="topbar">
+  <span class="topbar-brand">Customer Management</span>
+</div>
+
 <div class="position-fixed top-0 end-0 p-3" style="z-index: 1050">
   <div id="toast" class="toast align-items-center text-white border-0">
     <div class="d-flex">
       <div class="toast-body" id="toastBody"></div>
-      <button type="button" class="btn-close btn-close-white me-2 m-auto"
-              data-bs-dismiss="toast"></button>
+      <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
     </div>
   </div>
 </div>
-<div class="container mt-5">
 
-  <div class="card shadow-sm p-4">
+<div class="page-wrapper">
 
-    <h3 class="mb-4">Edit Customer</h3>
+  <div class="page-header">
+    <h1 class="page-title">Edit Customer</h1>
+    <p class="page-subtitle">Update information for customer #<span th:text="${customer.customerNumber}"></span></p>
+  </div>
+
+  <div class="form-card">
 
     <form id="updateForm">
 
       <input type="hidden" id="customerNumber" th:value="${customer.customerNumber}">
 
-      <!-- NAME -->
-      <div class="mb-3">
+      <div class="mb-4">
         <label class="form-label">Customer Name</label>
         <input type="text" id="customerName" class="form-control"
                th:value="${customer.customerName}"
                th:attr="data-original=${customer.customerName}">
       </div>
 
-      <!-- CONTACT -->
-      <div class="row mb-3">
-
+      <div class="row mb-4">
         <div class="col">
           <label class="form-label">First Name</label>
           <input type="text" id="contactFirstName" class="form-control"
@@ -49,11 +204,9 @@
                  th:value="${customer.contactLastName}"
                  th:attr="data-original=${customer.contactLastName}">
         </div>
-
       </div>
 
-      <!-- PHONE -->
-      <div class="mb-3">
+      <div class="mb-4">
         <label class="form-label">Phone</label>
         <input type="text" id="phone" class="form-control"
                placeholder="+91 98765 43210"
@@ -61,8 +214,9 @@
                th:attr="data-original=${customer.phone}">
       </div>
 
-      <!-- ADDRESS -->
-      <div class="row mb-3">
+      <div class="section-divider"></div>
+
+      <div class="row mb-4">
         <div class="col">
           <label class="form-label">Address Line 1</label>
           <input type="text" id="addressLine1" class="form-control"
@@ -79,8 +233,7 @@
         </div>
       </div>
 
-      <!-- LOCATION -->
-      <div class="row mb-3">
+      <div class="row mb-4">
         <div class="col">
           <label class="form-label">City</label>
           <input type="text" id="city" class="form-control"
@@ -96,21 +249,21 @@
         </div>
       </div>
 
-      <!-- CREDIT -->
-      <div class="mb-3">
+      <div class="section-divider"></div>
+
+      <div class="mb-5">
         <label class="form-label">Credit Limit</label>
         <input type="number" id="creditLimit" class="form-control"
                th:value="${customer.creditLimit}"
                th:attr="data-original=${customer.creditLimit}">
       </div>
 
-      <!-- BUTTONS -->
       <div class="d-flex gap-2">
-        <button type="button" class="btn btn-success" onclick="updateCustomer()">
-          Update
+        <button type="button" class="btn-update" onclick="updateCustomer()">
+          Update Customer
         </button>
 
-        <button type="button" class="btn btn-secondary" onclick="history.back()">
+        <button type="button" class="btn-cancel" onclick="history.back()">
           Cancel
         </button>
       </div>
